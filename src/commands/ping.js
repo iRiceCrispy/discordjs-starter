@@ -5,12 +5,12 @@ module.exports = {
     .setName('ping')
     .setDescription('Returns bot ping'),
   async execute(interaction) {
-    const msg = await interaction.deferReply({ fetchReply: true});
+    const msg = await interaction.deferReply({ fetchReply: true });
 
     const embed = new EmbedBuilder()
       .setColor('Green')
       .setDescription(`**${msg.createdTimestamp - interaction.createdTimestamp}** ms`);
 
-    return await interaction.editReply({ embeds: [embed] });
-  }
-}
+    await interaction.editReply({ embeds: [embed] });
+  },
+};
