@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Returns bot ping'),
+    .setDescription('Returns the bot\'s ping.'),
   async execute(interaction) {
     const msg = await interaction.deferReply({ fetchReply: true });
 

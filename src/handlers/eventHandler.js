@@ -1,22 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+const getEvents = require('../util/getEvents');
 
 module.exports = (client) => {
-  const eventsPath = path.join(__dirname, '..', 'events');
-  const eventFiles = fs
-    .readdirSync(eventsPath)
-    .filter(file => file.endsWith('.js'));
-
-  eventFiles.forEach((file) => {
-    const filePath = path.join(eventsPath, file);
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    const event = require(filePath);
-
+  getEvents().forEach((event) => {
     if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args, client));
+      client.once(event.name, (...args) => event.execute(...args));
     }
     else {
-      client.on(event.name, (...args) => event.execute(...args, client));
+      client.on(event.name, (...args) => event.execute(...args));
     }
   });
 };

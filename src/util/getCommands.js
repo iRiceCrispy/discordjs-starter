@@ -1,22 +1,29 @@
+/* eslint-disable global-require, import/no-dynamic-require */
+
 const fs = require('fs');
 const path = require('path');
 
 const getCommands = (dir = __dirname, rel = '../commands') => {
-  const commandsFolder = path.join(dir, rel);
-  const commandFiles = fs.readdirSync(commandsFolder);
+  const commandsPath = path.join(dir, rel);
+  const commandFiles = fs.readdirSync(commandsPath);
   const commands = [];
 
   commandFiles.forEach((file) => {
-    const stat = fs.lstatSync(path.join(commandsFolder, file));
+    const filePath = path.join(commandsPath, file);
+    const stat = fs.lstatSync(filePath);
 
     if (stat.isDirectory()) {
-      commands.push(...getCommands(commandsFolder, file));
+      commands.push(...getCommands(commandsPath, file));
     }
-    else {
-      // eslint-disable-next-line global-require,import/no-dynamic-require
-      const command = require(path.join(commandsFolder, file));
+    else if (path.extname(file) === '.js') {
+      const command = require(filePath);
 
-      commands.push(command);
+      if ('data' in command && 'execute' in command) {
+        commands.push(command);
+      }
+      else {
+        console.warn(`The command file ${file} is missing a required "data" or "execute" property.`);
+      }
     }
   });
 
